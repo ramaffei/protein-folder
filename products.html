@@ -98,3 +98,74 @@
         <script src="js/scripts.js"></script>
     </body>
 </html>
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mx-auto">
+        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="index.html">Home</a></li>
+        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="about.html">About</a></li>
+        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="#" id="productsButton" data-bs-toggle="modal" data-bs-target="#myModal">Products</a></li>
+        <li class="nav-item px-lg-4"><a class="nav-link text-uppercase" href="store.html">Store</a></li>
+    </ul>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload ZIP File</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm">
+                    <div class="mb-3">
+                        <label for="zipFile" class="form-label">Select ZIP file:</label>
+                        <input type="file" class="form-control" id="zipFile" accept=".zip" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="uploadAndApply()">Upload & Apply</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ... (código posterior) ... -->
+
+<script>
+    function uploadAndApply() {
+        const fileInput = document.getElementById('zipFile');
+        const file = fileInput.files[0];
+
+        if (file) {
+            // Sube el archivo y luego llama a tu función AlphaFoldXploR_read con el nombre del archivo
+            // Puedes usar Fetch API o AJAX para cargar el archivo
+            // Luego, cuando tengas los archivos de salida, puedes llamar a la siguiente función
+            // otraFuncion(outputFile1, outputFile2, ...);
+            AlphaFoldXploR_read(file.name);
+
+            // Cierra el modal después de cargar y aplicar
+            $('#myModal').modal('hide');
+        }
+    }
+
+    // Función AlphaFoldXploR_read
+    function AlphaFoldXploR_read(zfile) {
+        def AlphaFoldXploR_read (zfile):
+  with ZipFile(zfile, 'r') as fz:
+    for zip_info in fz.infolist():
+      if zip_info.filename[-1] == '/':
+        continue
+      tab = os.path.basename(zip_info.filename)
+      if tab.endswith(".json"):
+        zip_info.filename = os.path.basename(zip_info.filename)
+        lista1=fz.extract(zip_info, "archivos_json")
+
+
+  with ZipFile(zfile, 'r') as fz:
+    for zip_info in fz.infolist():
+      if zip_info.filename[-1] == '/':
+        continue
+      tab = os.path.basename(zip_info.filename)
+      if tab.endswith(".pdb"):
+        zip_info.filename = os.path.basename(zip_info.filename)
+        lista2=fz.extract(zip_info, "archivos_pdb")
+    }
