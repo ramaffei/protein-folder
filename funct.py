@@ -4,7 +4,7 @@ from zipfile import ZipFile
 import os
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = './PAGINA/downlo'
+app.config['UPLOAD_FOLDER'] = './downlo'
 
 ALLOWED_EXTENSIONS = {'zip'}
 
@@ -30,7 +30,7 @@ def AlphaFoldXploR_read(zfile):
                 zip_info.filename = os.path.basename(zip_info.filename)
                 lista2 = fz.extract(zip_info, "archivos_pdb")
 
-@app.route("/PAGINA/")
+@app.route("/")
 def upload_file():
     return render_template('products.html')
 
