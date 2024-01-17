@@ -119,42 +119,4 @@
 </html>
 
 
-<script>
-    function uploadAndApply() {
-        const fileInput = document.getElementById('zipFile');
-        const file = fileInput.files[0];
 
-        if (file) {
-            // Sube el archivo y luego llama a tu función AlphaFoldXploR_read con el nombre del archivo
-            // Puedes usar Fetch API o AJAX para cargar el archivo
-            // Luego, cuando tengas los archivos de salida, puedes llamar a la siguiente función
-            // otraFuncion(outputFile1, outputFile2, ...);
-            AlphaFoldXploR_read(file.name);
-
-            // Cierra el modal después de cargar y aplicar
-            $('#myModal').modal('hide');
-        }
-    }
-
-    // Función AlphaFoldXploR_read
-    function AlphaFoldXploR_read(zfile) {
-        def AlphaFoldXploR_read (zfile):
-  with ZipFile(zfile, 'r') as fz:
-    for zip_info in fz.infolist():
-      if zip_info.filename[-1] == '/':
-        continue
-      tab = os.path.basename(zip_info.filename)
-      if tab.endswith(".json"):
-        zip_info.filename = os.path.basename(zip_info.filename)
-        lista1=fz.extract(zip_info, "archivos_json")
-
-
-  with ZipFile(zfile, 'r') as fz:
-    for zip_info in fz.infolist():
-      if zip_info.filename[-1] == '/':
-        continue
-      tab = os.path.basename(zip_info.filename)
-      if tab.endswith(".pdb"):
-        zip_info.filename = os.path.basename(zip_info.filename)
-        lista2=fz.extract(zip_info, "archivos_pdb")
-    }
