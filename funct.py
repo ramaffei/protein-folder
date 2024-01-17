@@ -18,7 +18,7 @@ def upload_file():
     return render_template('products.html')
 
 @app.route("/upload", methods=['POST'])
-def uploader():
+def uploadAndApply():
     if 'zipFile' not in request.files:
         flash('No se ha proporcionado ningún archivo')
         return redirect(request.url)
