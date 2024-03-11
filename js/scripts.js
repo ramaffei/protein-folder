@@ -1,3 +1,6 @@
+// Direccion del BACKEND, cambiar en produccion:
+API_URL = 'http://localhost:5000'
+
 // Funcion que se ejecuta al subir el archivo
 document
   .getElementById("button_submit")
@@ -12,7 +15,7 @@ document
     const formData = new FormData();
     formData.append("zipFile", file);
 
-    result = fetch("http://localhost:5000/upload/", {
+    result = fetch(API_URL+"/upload/", {
       method: "POST",
       body: formData,
     })
@@ -65,7 +68,7 @@ function showOptionsRamachan(optionsPdb) {
     button.addEventListener("click", () => {
       button.setAttribute("disabled", true);
       data = { filename: optionsPdb[i] };
-      result = fetch("http://localhost:5000/pdb/plot/ramachandran/", {
+      result = fetch(API_URL+"/pdb/plot/ramachandran/", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
@@ -123,7 +126,7 @@ function showOptionsZscores(optionsJson) {
     button.addEventListener("click", () => {
       button.setAttribute("disabled", true);
       data = { filename: optionsJson[i] };
-      result = fetch("http://localhost:5000/json/plot/zscores/", {
+      result = fetch(API_URL+"/json/plot/zscores/", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
