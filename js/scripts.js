@@ -1,5 +1,5 @@
 // Direccion del BACKEND, cambiar en produccion:
-API_URL = 'http://localhost:5000'
+API_URL = 'https://api-protein-folder.vercel.app'
 
 // Funcion que se ejecuta al subir el archivo
 document
