@@ -1,5 +1,5 @@
 // Direccion del BACKEND, cambiar en produccion:
-API_URL = 'https://api-protein-folder.vercel.app'
+API_URL = 'https://clownstech.com/api-protein-folder'
 
 // Funcion que se ejecuta al subir el archivo
 document
