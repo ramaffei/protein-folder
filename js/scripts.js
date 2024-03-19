@@ -1,6 +1,6 @@
 // Direccion del BACKEND, cambiar en produccion:
-//API_URL = 'https://clownstech.com/api-protein-folder'
-API_URL = 'http://localhost:5000'
+API_URL = 'https://clownstech.com/api-protein-folder'
+//API_URL = 'http://localhost:5000'
 // Funcion que se ejecuta al subir el archivo
 button_submit = document.getElementById("button_submit")
 button_submit.addEventListener("click", function (ev) {
