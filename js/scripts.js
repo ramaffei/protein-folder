@@ -1,11 +1,11 @@
 // Direccion del BACKEND, cambiar en produccion:
-API_URL = 'https://clownstech.com/api-protein-folder'
-
+//API_URL = 'https://clownstech.com/api-protein-folder'
+API_URL = 'http://localhost:5000'
 // Funcion que se ejecuta al subir el archivo
-document
-  .getElementById("button_submit")
-  .addEventListener("click", function (ev) {
-    const fileInput = document.getElementById("zipFile");
+button_submit = document.getElementById("button_submit")
+button_submit.addEventListener("click", function (ev) {
+    
+    const fileInput = document.getElementById("fastaFile");
     const file = fileInput.files[0];
 
     if (!file) {
@@ -13,9 +13,9 @@ document
     }
 
     const formData = new FormData();
-    formData.append("zipFile", file);
-
-    result = fetch(API_URL+"/upload/", {
+    formData.append("fastaFile", file);
+    button_submit.setAttribute("disabled", true);
+    result = fetch(API_URL+"/pdb/esm/fasta/", {
       method: "POST",
       body: formData,
     })
@@ -24,22 +24,144 @@ document
       .then((response) => {
         console.log("Success:", response.msg);
         loadArchives(response["data"]);
-      });
+      })
+      .finally(() => button_submit.setAttribute("disabled", false));
 
     ev.preventDefault();
   });
 
 // Funcion que se ejecuta una vez subido el archivo, ejecuta las dos funciones que renderizan el html para mostrar las opciones
 function loadArchives(data) {
-  if (Object(data).hasOwnProperty("JSON")) {
+/*   if (Object(data).hasOwnProperty("JSON")) {
     showOptionsZscores(data["JSON"]);
-  }
+  } 
   if (Object(data).hasOwnProperty("PDB")) {
     showOptionsRamachan(data["PDB"]);
-  }
+  }*/
+  showOptionsPdb(data)
+  ZscoresOptions(data)
   document.getElementById("results").classList.remove("d-none");
 }
 
+// Funcion de renderizado de las opciones para el pdb
+function showOptionsPdb(dataPDBs) {
+  if (!dataPDBs) return;
+  const container = document.getElementById("content_ramachan_options");
+  const elements = document.createElement("div");
+  elements.className = "row g-4";
+
+  // Recorremos cada archivo subido para dar la opcion de generar el grafico
+  for (const [name, files] of Object.entries(dataPDBs)) {
+    const col = document.createElement("div");
+    col.classList.add("col-12");
+
+    // HTML de la card que contiene el boton para generar el grafico de RAMANCHANDRAN
+    col.innerHTML = `<div class="card border-secondary">
+                            <div class="card-body">
+                                <h5 class="card-title">${name}</h5>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                <button class="btn btn-primary" id="file_${
+                                  name
+                                }">Go somewhere</button>
+                            </div>
+                        </div>`;
+    const button = col.querySelector(`#file_${name}`);
+
+    // Evento del boton, consulta al backend
+    button.addEventListener("click", () => {
+      button.setAttribute("disabled", true);
+      data = { filename: files.pdb };
+      result = fetch(API_URL+"/pdb/plot/ramachandran/", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((request) => request.json())
+        .catch((error) => console.error("Error:", error))
+        .then((response) => {
+          // HTML de renderizado de la imagen
+          const file = new File(
+            [base64ToBlob(response.data)],
+            "ramachandran.png",
+            { type: "image/png" }
+          );
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(file);
+          img.alt = "Imagen";
+          img.className =
+            "img-fluid my-2 border border-1 rounded border-secondary";
+          col.appendChild(img);
+        });
+    });
+
+    elements.appendChild(col);
+  }
+  container.replaceChildren(elements);
+}
+
+function ZscoresOptions(dataPDBs) {
+  if (!dataPDBs) return;
+  const container = document.getElementById("content_zscores_options");
+  const elements = document.createElement("div");
+  elements.className = "row g-4";
+
+  // Recorremos los archivos para renderizar las opciones
+  for (const [name, files] of Object.entries(dataPDBs)) {
+    const values = Object.values(files)
+    if ( values.length < 2 ) continue
+    const col = document.createElement("div");
+    col.classList.add("col-12");
+
+    // HTML de las opciones de ZSCORES
+    col.innerHTML = `<div class="card border-secondary">
+                            <div class="card-body">
+                                <h5 class="card-title">${name}</h5>
+                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                <button class="btn btn-primary" id="file_${
+                                  name
+                                }">Go somewhere</button>
+                            </div>
+                        </div>`;
+    const button = col.querySelector(`#file_${name}`);
+
+    // Evento que ejecuta la consulta del grafico al backend
+    
+    button.addEventListener("click", () => {
+      button.setAttribute("disabled", true);
+      data = { filenames: [values[0], values[1]] };
+      result = fetch(API_URL+"/pdb/plot/zscores/", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((request) => request.json())
+        .catch((error) => console.error("Error:", error))
+        .then((response) => {
+          const file = new File([base64ToBlob(response.data)], "zscores.png", {
+            type: "image/png",
+          });
+
+          // Renderizado del grafico zscores
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(file);
+          img.alt = "Imagen";
+          img.className =
+            "img-fluid my-2 border border-1 rounded border-secondary";
+          col.appendChild(img);
+        });
+    });
+
+    elements.appendChild(col);
+  }
+  container.replaceChildren(elements);
+}
+
+
+////////////////////////////////// CODIGO PRIMER VERSION /////////////////////////////
 // Funcion de renderizado de las opciones de ramanchandran
 function showOptionsRamachan(optionsPdb) {
   if (!optionsPdb) return;
